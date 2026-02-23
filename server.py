@@ -13,13 +13,30 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Startup diagnostic - print all env var names
-print("=== STARTUP ENV VARS ===", flush=True)
-for k in sorted(os.environ.keys()):
-    if 'KEY' in k or 'TOKEN' in k or 'SID' in k or 'OPENAI' in k or 'TWILIO' in k:
-        v = os.environ[k]
-        print(f"  {k} = {v[:8]}...{v[-4:]} (len={len(v)})", flush=True)
-print("========================", flush=True)
+# Load .env file if it exists (for Railway deployment)
+env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+if os.path.exists(env_path):
+    print(f"[STARTUP] Loading .env from {env_path}", flush=True)
+    with open(env_path) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, val = line.split('=', 1)
+                val = val.strip('"').strip("'")
+                os.environ[key.strip()] = val
+                print(f"  Loaded: {key.strip()} (len={len(val)})", flush=True)
+
+# Load config from config.py if env vars not set
+try:
+    import config as _cfg
+    for _k in ['OPENAI_API_KEY', 'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN']:
+        if not os.environ.get(_k) and hasattr(_cfg, _k):
+            os.environ[_k] = getattr(_cfg, _k)
+            print(f"  [CONFIG] Loaded {_k} from config.py", flush=True)
+except ImportError:
+    pass
+
+print(f"[STARTUP] OPENAI_API_KEY present: {bool(os.environ.get('OPENAI_API_KEY'))}", flush=True)
 
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
