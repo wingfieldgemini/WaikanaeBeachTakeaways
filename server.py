@@ -139,29 +139,34 @@ def voice_answer():
     ]
     
     response = VoiceResponse()
+    response.pause(length=1)
+    response.say(
+        "Hey there! Welcome to Waikanae Beach Takeaways. What can I get for you today?",
+        voice='Polly.Amy'
+    )
     gather = Gather(
         input='speech',
         action='/voice/process',
         method='POST',
-        speech_timeout=3,
-        timeout=10,
-        language='en-AU'
+        speech_timeout=5,
+        timeout=15,
+        language='en-AU',
+        enhanced=True
     )
-    gather.say(
-        "Hey there! Welcome to Waikanae Beach Takeaways. What can I get for you today?",
-        voice='Polly.Amy'
-    )
+    gather.say("", voice='Polly.Amy')
     response.append(gather)
-    # If no input, try again once
+    # If no input, try again
+    response.say("Hello? Just let me know what you'd like to order.", voice='Polly.Amy')
     gather2 = Gather(
         input='speech',
         action='/voice/process',
         method='POST',
-        speech_timeout=3,
-        timeout=10,
-        language='en-AU'
+        speech_timeout=5,
+        timeout=15,
+        language='en-AU',
+        enhanced=True
     )
-    gather2.say("Hello? Just let me know what you'd like to order.", voice='Polly.Amy')
+    gather2.say("", voice='Polly.Amy')
     response.append(gather2)
     response.say("No worries, give us a ring back when you're ready! Bye!", voice='Polly.Amy')
     response.hangup()
@@ -173,7 +178,26 @@ def voice_answer():
 def voice_process():
     call_sid = request.form.get('CallSid', '')
     speech_result = request.form.get('SpeechResult', '')
-    print(f"[VOICE] CallSid={call_sid}, SpeechResult='{speech_result}', All form data: {dict(request.form)}")
+    print(f"[VOICE] CallSid={call_sid}, SpeechResult='{speech_result}', All form data: {dict(request.form)}", flush=True)
+    
+    # If empty speech, ask again
+    if not speech_result.strip():
+        response = VoiceResponse()
+        response.say("Sorry, I didn't catch that. What would you like to order?", voice='Polly.Amy')
+        gather = Gather(
+            input='speech',
+            action='/voice/process',
+            method='POST',
+            speech_timeout=5,
+            timeout=15,
+            language='en-AU',
+            enhanced=True
+        )
+        gather.say("", voice='Polly.Amy')
+        response.append(gather)
+        response.say("No worries, call back anytime! Bye!", voice='Polly.Amy')
+        response.hangup()
+        return Response(str(response), mimetype='text/xml')
     
     if call_sid not in voice_conversations:
         voice_conversations[call_sid] = [
@@ -202,26 +226,29 @@ def voice_process():
         if call_sid in voice_conversations:
             del voice_conversations[call_sid]
     else:
+        response.say(reply, voice='Polly.Amy')
         gather = Gather(
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout=3,
-            timeout=10,
-            language='en-AU'
+            speech_timeout=5,
+            timeout=15,
+            language='en-AU',
+            enhanced=True
         )
-        gather.say(reply, voice='Polly.Amy')
+        gather.say("", voice='Polly.Amy')
         response.append(gather)
-        # Retry once if no input
+        response.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Amy')
         gather2 = Gather(
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout=3,
-            timeout=8,
-            language='en-AU'
+            speech_timeout=5,
+            timeout=15,
+            language='en-AU',
+            enhanced=True
         )
-        gather2.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Amy')
+        gather2.say("", voice='Polly.Amy')
         response.append(gather2)
         response.say("No worries, call back anytime! Bye!", voice='Polly.Amy')
         response.hangup()
