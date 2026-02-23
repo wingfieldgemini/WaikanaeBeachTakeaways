@@ -178,8 +178,8 @@ def voice_answer():
         input='speech',
         action='/voice/process',
         method='POST',
-        speech_timeout=5,
-        timeout=15,
+        speech_timeout=2,
+        timeout=8,
         language='en-AU',
         enhanced=True
     )
@@ -191,8 +191,8 @@ def voice_answer():
         input='speech',
         action='/voice/process',
         method='POST',
-        speech_timeout=5,
-        timeout=15,
+        speech_timeout=2,
+        timeout=8,
         language='en-AU',
         enhanced=True
     )
@@ -218,8 +218,8 @@ def voice_process():
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout=5,
-            timeout=15,
+            speech_timeout=2,
+            timeout=8,
             language='en-AU',
             enhanced=True
         )
@@ -261,8 +261,8 @@ def voice_process():
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout=5,
-            timeout=15,
+            speech_timeout=2,
+            timeout=8,
             language='en-AU',
             enhanced=True
         )
@@ -273,8 +273,8 @@ def voice_process():
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout=5,
-            timeout=15,
+            speech_timeout=2,
+            timeout=8,
             language='en-AU',
             enhanced=True
         )
@@ -317,4 +317,6 @@ def health():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))
     app.run(host='0.0.0.0', port=port)
+
+
 
