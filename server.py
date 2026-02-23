@@ -13,11 +13,16 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+_client = None
+
+def get_client():
+    global _client
+    if _client is None:
+        _client = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+    return _client
 
 # State management
 sms_conversations = {}
@@ -82,7 +87,7 @@ RULES:
 
 def get_ai_response(messages, max_tokens=300):
     try:
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
             max_tokens=max_tokens,
@@ -216,3 +221,4 @@ def health():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))
     app.run(host='0.0.0.0', port=port)
+
