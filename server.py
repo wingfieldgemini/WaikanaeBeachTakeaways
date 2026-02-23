@@ -142,16 +142,27 @@ def voice_answer():
         input='speech',
         action='/voice/process',
         method='POST',
-        speech_timeout='auto',
-        language='en-NZ'
+        speech_timeout=3,
+        timeout=10,
+        language='en-AU'
     )
     gather.say(
         "Hey there! Welcome to Waikanae Beach Takeaways. What can I get for you today?",
-        voice='Polly.Amy',
-        language='en-NZ'
+        voice='Polly.Amy'
     )
     response.append(gather)
-    response.say("Sorry, I didn't catch that. Give us a ring back when you're ready!", voice='Polly.Amy')
+    # If no input, try again once
+    gather2 = Gather(
+        input='speech',
+        action='/voice/process',
+        method='POST',
+        speech_timeout=3,
+        timeout=10,
+        language='en-AU'
+    )
+    gather2.say("Hello? Just let me know what you'd like to order.", voice='Polly.Amy')
+    response.append(gather2)
+    response.say("No worries, give us a ring back when you're ready! Bye!", voice='Polly.Amy')
     response.hangup()
     
     return Response(str(response), mimetype='text/xml')
@@ -193,13 +204,25 @@ def voice_process():
             input='speech',
             action='/voice/process',
             method='POST',
-            speech_timeout='auto',
-            language='en-NZ'
+            speech_timeout=3,
+            timeout=10,
+            language='en-AU'
         )
-        gather.say(reply, voice='Polly.Amy', language='en-NZ')
+        gather.say(reply, voice='Polly.Amy')
         response.append(gather)
-        response.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Amy')
-        response.redirect('/voice')
+        # Retry once if no input
+        gather2 = Gather(
+            input='speech',
+            action='/voice/process',
+            method='POST',
+            speech_timeout=3,
+            timeout=8,
+            language='en-AU'
+        )
+        gather2.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Amy')
+        response.append(gather2)
+        response.say("No worries, call back anytime! Bye!", voice='Polly.Amy')
+        response.hangup()
     
     return Response(str(response), mimetype='text/xml')
 
