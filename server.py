@@ -133,6 +133,7 @@ def sms_reply():
 @app.route('/voice', methods=['POST'])
 def voice_answer():
     call_sid = request.form.get('CallSid', '')
+    print(f"[VOICE] New call: CallSid={call_sid}, From={request.form.get('From','')}")
     voice_conversations[call_sid] = [
         {"role": "system", "content": VOICE_SYSTEM}
     ]
@@ -172,6 +173,7 @@ def voice_answer():
 def voice_process():
     call_sid = request.form.get('CallSid', '')
     speech_result = request.form.get('SpeechResult', '')
+    print(f"[VOICE] CallSid={call_sid}, SpeechResult='{speech_result}', All form data: {dict(request.form)}")
     
     if call_sid not in voice_conversations:
         voice_conversations[call_sid] = [
