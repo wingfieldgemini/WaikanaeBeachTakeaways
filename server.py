@@ -97,17 +97,25 @@ RULES:
 - End with: "Order confirmed! See you at [time] 🐟 40 Rangihiroa St, Waikanae Beach"
 - If outside hours, mention hours and suggest ordering for next open time"""
 
-VOICE_SYSTEM = f"""You are a friendly phone ordering assistant for Waikanae Beach Takeaways.
+VOICE_SYSTEM = f"""You are a real person working at Waikanae Beach Takeaways, answering the phone to take orders. Your name is Mia.
 
 {MENU_CONTEXT}
 
-RULES:
-- Keep responses to 2-3 SHORT sentences (this is spoken aloud)
-- Speak naturally like a real person
-- NZ casual and warm
-- If you can't understand, ask to repeat
-- Flow: greet → take order → confirm + total → pickup time → name → final confirm
-- Always confirm before finishing"""
+CRITICAL RULES FOR SOUNDING NATURAL:
+- You ARE a human — never say "I'm an AI" or anything robotic
+- Talk like a friendly Kiwi taking a phone order — casual, warm, relaxed
+- Use natural filler words: "yeah", "awesome", "sweet", "no worries", "cool"
+- Keep responses to 1-2 SHORT sentences max — this is a phone call, not an essay
+- Use contractions: "that'll be", "we've got", "you're looking at"
+- React naturally: "Oh nice choice!", "Yeah we do!", "Sweet as!"
+- Don't list the entire menu — just answer what they ask
+- Round naturally when speaking: say "twelve bucks" not "twelve dollars and zero cents"
+- If confirming an order, read it back casually: "So that's two fish and chips and a chicken burger, comes to thirty-three bucks"
+- Ask for pickup time casually: "What time works for you?"
+- Ask for name casually: "And what name's that under?"
+- End naturally: "Sweet, see you at six! Cheers!"
+- If you mishear, say "Sorry, didn't quite catch that — what was that?"
+- NEVER start a response with "Sure!" or "Of course!" — just answer directly like a real person would"""
 
 
 def get_ai_response(messages, max_tokens=300):
@@ -171,8 +179,8 @@ def voice_answer():
     response = VoiceResponse()
     response.pause(length=1)
     response.say(
-        "Hey there! Welcome to Waikanae Beach Takeaways. What can I get for you today?",
-        voice='Polly.Amy'
+        "Hey! Waikanae Beach Takeaways, what can I get ya?",
+        voice='Polly.Joanna'
     )
     gather = Gather(
         input='speech',
@@ -183,10 +191,10 @@ def voice_answer():
         language='en-AU',
         enhanced=True
     )
-    gather.say("", voice='Polly.Amy')
+    gather.say("", voice='Polly.Joanna')
     response.append(gather)
     # If no input, try again
-    response.say("Hello? Just let me know what you'd like to order.", voice='Polly.Amy')
+    response.say("Hello? You still there?", voice='Polly.Joanna')
     gather2 = Gather(
         input='speech',
         action='/voice/process',
@@ -196,9 +204,9 @@ def voice_answer():
         language='en-AU',
         enhanced=True
     )
-    gather2.say("", voice='Polly.Amy')
+    gather2.say("", voice='Polly.Joanna')
     response.append(gather2)
-    response.say("No worries, give us a ring back when you're ready! Bye!", voice='Polly.Amy')
+    response.say("No worries, give us a ring back when you're ready! Bye!", voice='Polly.Joanna')
     response.hangup()
     
     return Response(str(response), mimetype='text/xml')
@@ -213,7 +221,7 @@ def voice_process():
     # If empty speech, ask again
     if not speech_result.strip():
         response = VoiceResponse()
-        response.say("Sorry, I didn't catch that. What would you like to order?", voice='Polly.Amy')
+        response.say("Sorry, didn't quite catch that. What was that?", voice='Polly.Joanna')
         gather = Gather(
             input='speech',
             action='/voice/process',
@@ -223,9 +231,9 @@ def voice_process():
             language='en-AU',
             enhanced=True
         )
-        gather.say("", voice='Polly.Amy')
+        gather.say("", voice='Polly.Joanna')
         response.append(gather)
-        response.say("No worries, call back anytime! Bye!", voice='Polly.Amy')
+        response.say("No worries, call back anytime! Bye!", voice='Polly.Joanna')
         response.hangup()
         return Response(str(response), mimetype='text/xml')
     
@@ -250,13 +258,13 @@ def voice_process():
     response = VoiceResponse()
     
     if is_complete:
-        response.say(reply, voice='Polly.Amy', language='en-NZ')
-        response.say("Thanks for calling! See you soon!", voice='Polly.Amy')
+        response.say(reply, voice='Polly.Joanna', language='en-NZ')
+        response.say("Cheers! See ya soon!", voice='Polly.Joanna')
         response.hangup()
         if call_sid in voice_conversations:
             del voice_conversations[call_sid]
     else:
-        response.say(reply, voice='Polly.Amy')
+        response.say(reply, voice='Polly.Joanna')
         gather = Gather(
             input='speech',
             action='/voice/process',
@@ -266,9 +274,9 @@ def voice_process():
             language='en-AU',
             enhanced=True
         )
-        gather.say("", voice='Polly.Amy')
+        gather.say("", voice='Polly.Joanna')
         response.append(gather)
-        response.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Amy')
+        response.say("Sorry, I didn't catch that. Could you say that again?", voice='Polly.Joanna')
         gather2 = Gather(
             input='speech',
             action='/voice/process',
@@ -278,9 +286,9 @@ def voice_process():
             language='en-AU',
             enhanced=True
         )
-        gather2.say("", voice='Polly.Amy')
+        gather2.say("", voice='Polly.Joanna')
         response.append(gather2)
-        response.say("No worries, call back anytime! Bye!", voice='Polly.Amy')
+        response.say("No worries, call back anytime! Bye!", voice='Polly.Joanna')
         response.hangup()
     
     return Response(str(response), mimetype='text/xml')
@@ -317,6 +325,7 @@ def health():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
