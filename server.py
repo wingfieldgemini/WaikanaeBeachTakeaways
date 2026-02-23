@@ -13,6 +13,14 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# Startup diagnostic - print all env var names
+print("=== STARTUP ENV VARS ===", flush=True)
+for k in sorted(os.environ.keys()):
+    if 'KEY' in k or 'TOKEN' in k or 'SID' in k or 'OPENAI' in k or 'TWILIO' in k:
+        v = os.environ[k]
+        print(f"  {k} = {v[:8]}...{v[-4:]} (len={len(v)})", flush=True)
+print("========================", flush=True)
+
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 
