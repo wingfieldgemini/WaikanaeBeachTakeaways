@@ -459,6 +459,9 @@ h3 { font-size: 1.25rem; }
   text-align: center;
 }
 .footer-bottom p { font-size: 0.8rem; color: var(--text-dim); }
+.footer-bottom .powered-by { margin-top: 8px; }
+.footer-bottom .powered-by a { color: var(--text-dim); font-size: 0.75rem; transition: color var(--transition); }
+.footer-bottom .powered-by a:hover { color: var(--gold); }
 
 /* ===== REVEAL ANIMATIONS ===== */
 .reveal {
