@@ -123,8 +123,10 @@ def get_ai_response(messages, max_tokens=300):
         print(f"[AI] Reply: {reply[:100]}...", flush=True)
         return reply
     except Exception as e:
+        import traceback
         print(f"[AI] OpenAI error: {type(e).__name__}: {e}", flush=True)
-        return None
+        traceback.print_exc()
+        return f"DEBUG: {type(e).__name__}: {str(e)[:200]}"
 
 
 # ========== SMS ENDPOINTS ==========
@@ -147,7 +149,7 @@ def sms_reply():
     
     reply = get_ai_response(sms_conversations[from_number])
     if not reply:
-        reply = "Sorry, quick tech hiccup! Ring us on 042 938 332 to order 📞"
+        reply = "Sorry, quick tech hiccup! Ring us on 042 938 332 to order"
     
     sms_conversations[from_number].append({"role": "assistant", "content": reply})
     
