@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget Demo — Waikanae Beach Takeaways</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0d1b2a 100%);
+            min-height: 100vh; color: #e0e6ed;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 20px;
+        }
+        .demo-badge {
+            background: linear-gradient(135deg, #d4a853, #b8922e);
+            color: #0a1628; padding: 6px 18px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 16px;
+        }
+        h1 { font-size: 2.2em; font-weight: 700; margin-bottom: 8px; text-align: center; }
+        h1 span { color: #d4a853; }
+        .subtitle { color: #8899aa; font-size: 1.1em; margin-bottom: 32px; text-align: center; }
+        .demo-card {
+            background: rgba(255,255,255,.04); border: 1px solid rgba(212,168,83,.15);
+            border-radius: 16px; padding: 32px; max-width: 600px; width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        .demo-card h2 { color: #d4a853; font-size: 1.1em; margin-bottom: 16px; }
+        .demo-card ul { list-style: none; padding: 0; }
+        .demo-card li { padding: 8px 0; color: #aabbcc; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,.05); }
+        .demo-card li:last-child { border: none; }
+        .demo-card li code { background: rgba(212,168,83,.15); color: #d4a853; padding: 2px 8px; border-radius: 4px; font-size: 13px; }
+        .integration-code {
+            background: #0a1628; border: 1px solid rgba(212,168,83,.2); border-radius: 12px;
+            padding: 20px; margin-top: 24px; font-family: monospace; font-size: 14px;
+            color: #d4a853; word-break: break-all;
+        }
+        .footer-note { color: #556677; font-size: 12px; margin-top: 32px; text-align: center; }
+        .footer-note a { color: #d4a853; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="demo-badge">Demo Mode</div>
+    <h1>🐟 <span>AI Ordering</span> Chat Widget</h1>
+    <p class="subtitle">Waikanae Beach Takeaways — Click the chat button to try it out →</p>
+
+    <div class="demo-card">
+        <h2>Try these conversations:</h2>
+        <ul>
+            <li>Say <code>hi</code> or <code>kia ora</code> for a greeting</li>
+            <li>Ask <code>what's on the menu?</code></li>
+            <li>Try <code>what fish do you have?</code></li>
+            <li>Order: <code>2 fish and chips</code></li>
+            <li>Add more: <code>a chicken burger</code></li>
+            <li>Ask about <code>family packs</code></li>
+            <li>Say <code>that's it</code> to confirm your order</li>
+            <li>Give a pickup time like <code>6pm</code></li>
+            <li>Then your name to complete the order!</li>
+        </ul>
+        <div class="integration-code">
+            &lt;script src="chat-widget.js"&gt;&lt;/script&gt;
+        </div>
+    </div>
+
+    <p class="footer-note">Built by <a href="https://wingfieldgemini.com" target="_blank">WingfieldGemini</a></p>
+
+    <script src="chat-widget.js"></script>
+</body>
+</html>
