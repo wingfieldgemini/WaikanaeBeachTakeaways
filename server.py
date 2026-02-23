@@ -87,15 +87,18 @@ RULES:
 
 def get_ai_response(messages, max_tokens=300):
     try:
+        print(f"[AI] Calling OpenAI with {len(messages)} messages, key present: {bool(os.environ.get('OPENAI_API_KEY'))}", flush=True)
         response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
             max_tokens=max_tokens,
             temperature=0.7
         )
-        return response.choices[0].message.content
+        reply = response.choices[0].message.content
+        print(f"[AI] Reply: {reply[:100]}...", flush=True)
+        return reply
     except Exception as e:
-        print(f"OpenAI error: {e}")
+        print(f"[AI] OpenAI error: {type(e).__name__}: {e}", flush=True)
         return None
 
 
