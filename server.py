@@ -269,6 +269,20 @@ def voice_process():
 
 # ========== HEALTH CHECK ==========
 
+@app.route('/debug', methods=['GET'])
+def debug():
+    key = os.environ.get('OPENAI_API_KEY', '')
+    sid = os.environ.get('TWILIO_ACCOUNT_SID', '')
+    all_keys = [k for k in os.environ.keys() if 'OPENAI' in k or 'KEY' in k or 'TWILIO' in k]
+    return json.dumps({
+        "openai_key_present": bool(key),
+        "openai_key_len": len(key),
+        "openai_key_start": key[:10] if key else "MISSING",
+        "twilio_sid_present": bool(sid),
+        "all_matching_vars": all_keys,
+        "total_env_vars": len(os.environ)
+    }), 200, {'Content-Type': 'application/json'}
+
 @app.route('/', methods=['GET'])
 @app.route('/health', methods=['GET'])
 def health():
